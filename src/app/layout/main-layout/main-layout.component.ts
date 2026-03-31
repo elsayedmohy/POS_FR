@@ -10,13 +10,7 @@ import { ThemeSwitcher } from '../../../theme/themeswitcher';
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterOutlet,
-    SidebarComponent,
-    HeaderComponent,
-    ButtonModule,
-  ],
+  imports: [CommonModule, RouterOutlet, SidebarComponent, HeaderComponent, ButtonModule],
   styles: [
     `
       .app-wrapper {
@@ -59,9 +53,10 @@ import { ThemeSwitcher } from '../../../theme/themeswitcher';
 
       :host-context(body.rtl) .content-wrapper {
         margin-left: 0;
+        margin-right: var(--sidebar-width);
       }
 
-      :host-context(body.rtl) .content-wrapper .collapsed {
+      :host-context(body.rtl) .content-wrapper.collapsed {
         margin-right: var(--sidebar-collapsed-width);
       }
 
@@ -78,17 +73,17 @@ import { ThemeSwitcher } from '../../../theme/themeswitcher';
         .content-wrapper {
           margin-left: 0;
         }
-        .sidebar-area.collapsed {
+        .sidebar-area .collapsed {
           width: var(--sidebar-width);
         }
-        .content-wrapper.collapsed {
+        .content-wrapper .collapsed {
           margin-left: var(--sidebar-width);
         }
       }
     `,
   ],
   template: `
-<!--          <theme-switcher />-->
+    <!--          <theme-switcher />-->
     <div class="app-wrapper">
       <div class="sidebar-area" [class.collapsed]="sidebarCollapsed">
         <app-sidebar [collapsed]="sidebarCollapsed" (collapsedChange)="sidebarCollapsed = $event" />

@@ -444,14 +444,14 @@
 
   // ── RTL Overrides ─────────────────────────────────────────────────────────
   body.rtl {
-    .main-content {
-      margin-left: 0;
-      margin-right: var(--sidebar-width);
-
-      &.collapsed {
-        margin-right: var(--sidebar-collapsed-width);
-      }
-    }
+    //.main-content {
+    //  margin-left: 0;
+    //  margin-right: var(--sidebar-width);
+    //
+    //  &.collapsed {
+    //    margin-right: var(--sidebar-collapsed-width);
+    //  }
+    //}
 
     .header {
       left: 0;
