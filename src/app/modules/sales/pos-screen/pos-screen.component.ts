@@ -12,10 +12,11 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { DataService } from '../../../core/services/data.service';
-import { Product, CartItem, Sale, SaleItem } from '../../../core/models/models';
+import {CartItem, Sale, SaleItem } from '../../../core/models/models';
 import { AuthService } from '../../../core/services/auth.service';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { Product } from '../../products/models/product';
 
 @Component({
     selector: 'app-pos-screen',
@@ -158,7 +159,7 @@ import { InputIconModule } from 'primeng/inputicon';
       </div>
       <ng-template pTemplate="footer">
         <p-button label="New Sale" icon="pi pi-plus" (onClick)="newSale()" />
-        <p-button label="View Sales" icon="pi pi-list" severity="secondary" [outlined]="true" (onClick)="goToSales()" />
+        <p-button label="View Sales" icon="pi pi-list"  [outlined]="true" (onClick)="goToSales()" />
       </ng-template>
     </p-dialog>
   `
@@ -189,7 +190,7 @@ export class PosScreenComponent implements OnInit {
 
     ngOnInit() {
         this.data.getProducts().subscribe(p => {
-            this.products = p.filter(x => x.active);
+            this.products = p;
             this.filteredProducts = this.products;
         });
         this.data.getCategories().subscribe(c => this.categories = c);
@@ -236,7 +237,7 @@ export class PosScreenComponent implements OnInit {
         const sale: Sale = {
             id: 0, saleDate: new Date().toISOString(),
             customerName: this.customerName,
-            cashierId: user?.id || 1, cashierName: user?.fullName,
+            cashierId: user?.id || 1, cashierName: user?.name,
             items: this.cart.map(i => ({
                 productId: i.product.id, productName: i.product.name,
                 quantity: i.quantity, unitPrice: i.unitPrice, totalPrice: i.totalPrice

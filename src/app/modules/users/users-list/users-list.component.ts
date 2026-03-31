@@ -32,7 +32,7 @@ import { InputIconModule } from 'primeng/inputicon';
         </p-iconfield>
         <div style="display:flex; gap:0.5rem;">
           <p-button *ngFor="let r of roles" [label]="r" [outlined]="selectedRole !== r"
-            (onClick)="selectedRole = r; filter()" size="small" severity="secondary" />
+            (onClick)="selectedRole = r; filter()" size="small"  />
         </div>
       </div>
 
@@ -53,9 +53,9 @@ import { InputIconModule } from 'primeng/inputicon';
             <td>
               <div style="display:flex; align-items:center; gap: 0.75rem;">
                 <div style="width:36px;height:36px;border-radius:50%;background:var(--primary-500);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;flex-shrink:0;">
-                  {{ user.fullName.charAt(0) }}
+                  {{ user.name.charAt(0) }}
                 </div>
-                <span style="font-weight:500;">{{ user.fullName }}</span>
+                <span style="font-weight:500;">{{ user.name }}</span>
               </div>
             </td>
             <td>{{ user.email }}</td>
@@ -103,14 +103,14 @@ export class UsersListComponent implements OnInit {
         this.filteredUsers = this.users.filter(u => {
             const matchRole = this.selectedRole === 'All' || u.role === this.selectedRole;
             const q = this.searchQuery.toLowerCase();
-            const matchSearch = !q || u.fullName.toLowerCase().includes(q) || u.email.toLowerCase().includes(q);
+            const matchSearch = !q || u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q);
             return matchRole && matchSearch;
         });
     }
 
     deleteUser(user: User) {
         this.confirm.confirm({
-            message: `Delete user "${user.fullName}"?`,
+            message: `Delete user "${user.name}"?`,
             accept: () => {
                 this.data.deleteUser(user.id).subscribe(() => {
                     this.users = this.users.filter(u => u.id !== user.id);

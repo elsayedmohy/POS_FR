@@ -25,7 +25,7 @@ import { SelectModule } from 'primeng/select';
   template: `
     <div class="page-header">
       <h1>{{ isEdit ? ('USERS.EDIT_USER' | translate) : ('USERS.ADD_USER' | translate) }}</h1>
-      <p-button icon="pi pi-arrow-left" label="Back" severity="secondary" [outlined]="true" [routerLink]="['/users']" size="small" />
+      <p-button icon="pi pi-arrow-left" label="Back"  [outlined]="true" [routerLink]="['/users']" size="small" />
     </div>
 
     <div class="card" style="max-width:700px;">
@@ -33,8 +33,8 @@ import { SelectModule } from 'primeng/select';
         <div class="form-grid">
           <div class="form-field">
             <label>{{ 'USERS.FULL_NAME' | translate }} *</label>
-            <input pInputText formControlName="fullName" [placeholder]="'USERS.FULL_NAME' | translate" />
-            <small class="p-error" *ngIf="form.get('fullName')?.touched && form.get('fullName')?.invalid">{{ 'VALIDATION.REQUIRED' | translate }}</small>
+            <input pInputText formControlName="name" [placeholder]="'USERS.FULL_NAME' | translate" />
+            <small class="p-error" *ngIf="form.get('name')?.touched && form.get('name')?.invalid">{{ 'VALIDATION.REQUIRED' | translate }}</small>
           </div>
 
           <div class="form-field">
@@ -61,7 +61,7 @@ import { SelectModule } from 'primeng/select';
           </div>
 
           <div class="form-field span-2" style="display:flex; gap:0.75rem; justify-content:flex-end; padding-top:0.5rem;">
-            <p-button label="Cancel" severity="secondary" [outlined]="true" [routerLink]="['/users']" />
+            <p-button label="Cancel"  [outlined]="true" [routerLink]="['/users']" />
             <p-button [label]="isEdit ? 'Update User' : 'Add User'" type="submit" [loading]="loading" [disabled]="form.invalid" />
           </div>
         </div>
@@ -87,7 +87,7 @@ export class UserFormComponent implements OnInit {
     private msg: MessageService
   ) {
     this.form = this.fb.group({
-      fullName: ['', Validators.required],
+      name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       phone: [''],
       role: ['cashier' as 'admin' | 'cashier', Validators.required],
@@ -111,7 +111,7 @@ export class UserFormComponent implements OnInit {
     const v = this.form.value;
     const user: User = {
       id: this.isEdit ? +this.route.snapshot.paramMap.get('id')! : 0,
-      fullName: v.fullName!, email: v.email!,
+      name: v.name!, email: v.email!,
       phone: v.phone || undefined, role: v.role!,
       status: v.active ? 'active' : 'inactive'
     };

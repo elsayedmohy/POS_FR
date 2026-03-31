@@ -14,6 +14,8 @@ import { LocalizationService } from '../../core/services/localization.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { RouterLink } from '@angular/router';
 import { ToastService } from '../../core/services/toast.service';
+import { DashboardService } from './services/dashboard.service';
+import { Observable, take, tap } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -60,8 +62,8 @@ import { ToastService } from '../../core/services/toast.service';
     </div>
 
     <!-- KPI Cards -->
-    @if (stats) {
-      <div class="stats-grid" >
+    @if (stats$ | async; as stats) {
+      <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-icon blue"><i class="pi pi-receipt"></i></div>
           <div class="stat-content">
@@ -74,7 +76,7 @@ import { ToastService } from '../../core/services/toast.service';
           <div class="stat-icon green"><i class="pi pi-dollar"></i></div>
           <div class="stat-content">
             <div class="stat-value">
-              {{ stats.totalRevenue  | currency: 'EG' : 'symbol' : '1.2-2' }}
+              {{ stats.totalRevenue | currency: 'EG' : 'symbol' : '1.2-2' }}
             </div>
             <div class="stat-label">{{ 'DASHBOARD.TOTAL_REVENUE' | translate }}</div>
             <div class="stat-change up">↑ 8.3% this week</div>
@@ -114,58 +116,60 @@ import { ToastService } from '../../core/services/toast.service';
     </div>
 
     <!-- Top Products Table -->
-    <div class="card">
-      <div
-        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;"
-      >
-        <h3 style="font-weight: 600;">{{ 'DASHBOARD.TOP_PRODUCTS' | translate }}</h3>
-        <p-button
-          label="View All"
-          icon="pi pi-arrow-right"
-          iconPos="right"
-          [text]="true"
-          [routerLink]="['/products']"
-          size="small"
-        />
-      </div>
-      <p-table [value]="stats?.topProducts || []" [rows]="5">
-        <ng-template pTemplate="header">
-          <tr>
-            <th>#</th>
-            <th>{{ 'PRODUCTS.PRODUCT_NAME' | translate }}</th>
-            <th>{{ 'SALES.ITEMS' | translate }}</th>
-            <th>{{ 'SALES.TOTAL' | translate }}</th>
-            <th>Performance</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-item let-i="rowIndex">
-          <tr>
-            <td>
-              <span style="font-weight: 700; color: var(--primary-500);">#{{ i + 1 }}</span>
-            </td>
-            <td>
-              <span style="font-weight: 500;">{{ item.name }}</span>
-            </td>
-            <td>{{ item.sold }}</td>
-            <td style="font-weight: 600;">{{ item.revenue | currency: 'SAR' }}</td>
-            <td>
-              <div
-                style="background: var(--surface-200); border-radius: 4px; height: 6px; width: 100%; overflow: hidden;"
-              >
+    @if (stats$ | async; as stats) {
+      <div class="card">
+        <div
+          style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;"
+        >
+          <h3 style="font-weight: 600;">{{ 'DASHBOARD.TOP_PRODUCTS' | translate }}</h3>
+          <p-button
+            label="View All"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            [text]="true"
+            [routerLink]="['/products']"
+            size="small"
+          />
+        </div>
+        <p-table [value]="stats.topProducts" [rows]="5">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>#</th>
+              <th>{{ 'PRODUCTS.PRODUCT_NAME' | translate }}</th>
+              <th>{{ 'SALES.ITEMS' | translate }}</th>
+              <th>{{ 'SALES.TOTAL' | translate }}</th>
+              <th>Performance</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item let-i="rowIndex">
+            <tr>
+              <td>
+                <span style="font-weight: 700; color: var(--primary-500);">#{{ i + 1 }}</span>
+              </td>
+              <td>
+                <span style="font-weight: 500;">{{ item.productName }}</span>
+              </td>
+              <td>{{ item.sold }}</td>
+              <td style="font-weight: 600;">{{ item.revenue | currency: 'SAR' }}</td>
+              <td>
                 <div
-                  [style.width.%]="(item.revenue / 60) * 100"
-                  style="height: 100%; background: var(--primary-400); border-radius: 4px;"
-                ></div>
-              </div>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </div>
+                  style="background: var(--surface-200); border-radius: 4px; height: 6px; width: 100%; overflow: hidden;"
+                >
+                  <div
+                    [style.width.%]="(item.revenue / 60) * 100"
+                    style="height: 100%; background: var(--primary-400); border-radius: 4px;"
+                  ></div>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    }
   `,
 })
 export class DashboardComponent implements OnInit {
-  stats: DashboardStats | null = null;
+  stats$: Observable<DashboardStats>;
   selectedPeriod: any = { label: 'Week', value: 'week' };
   periods = [
     { label: 'Today', value: 'today' },
@@ -178,13 +182,19 @@ export class DashboardComponent implements OnInit {
   doughnutData: any;
   doughnutOptions: any;
 
-  constructor(private data: DataService) {}
+  constructor(
+    private data: DataService,
+    private dashboardService: DashboardService,
+  ) {}
 
   ngOnInit() {
-    this.data.getDashboardStats().subscribe((s) => {
-      this.stats = s;
-      this.buildCharts(s);
-    });
+
+    this.stats$ = this.dashboardService.getDashboardData().pipe(
+      tap((data) => {
+        console.log(data);
+        // this.buildCharts(data);
+      }),
+    );
   }
 
   buildCharts(s: DashboardStats) {
@@ -213,10 +223,10 @@ export class DashboardComponent implements OnInit {
     };
 
     this.doughnutData = {
-      labels: s.topProducts.slice(0, 3).map((p) => p.name),
+      labels: s.topProducts.slice(0, 3).map((p) => p.productName),
       datasets: [
         {
-          data: s.topProducts.slice(0, 3).map((p) => p.revenue),
+          data: s.topProducts.slice(0, 3).map((p) => p.totalQuantity),
           backgroundColor: ['#3B82F6', '#10B981', '#F59E0B'],
           hoverBackgroundColor: ['#2563EB', '#059669', '#D97706'],
         },

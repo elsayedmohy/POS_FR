@@ -78,7 +78,7 @@ export class LoginComponent {
   ) {
     this.form = this.fb.group({
       email: ['admin@pos.com', [Validators.required, Validators.email]],
-      password: ['password', Validators.required],
+      password: ['123456', Validators.required],
       rememberMe: [false]
     });
   }

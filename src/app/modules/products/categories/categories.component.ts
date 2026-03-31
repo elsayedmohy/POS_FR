@@ -9,8 +9,8 @@ import { ColorPickerModule } from 'primeng/colorpicker';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { DataService } from '../../../core/services/data.service';
-import { Category } from '../../../core/models/models';
 import { TranslateService } from '@ngx-translate/core';
+import { Category } from '../models/category';
 
 @Component({
   selector: 'app-categories',
@@ -64,7 +64,7 @@ import { TranslateService } from '@ngx-translate/core';
         </div>
       </form>
       <ng-template pTemplate="footer">
-        <p-button [label]="'COMMON.CANCEL' | translate" severity="secondary" [outlined]="true" (onClick)="dialogVisible = false" />
+        <p-button [label]="'COMMON.CANCEL' | translate"  [outlined]="true" (onClick)="dialogVisible = false" />
         <p-button [label]="'COMMON.SAVE' | translate" (onClick)="save()" [disabled]="form.invalid" />
       </ng-template>
     </p-dialog>
@@ -95,13 +95,13 @@ export class CategoriesComponent implements OnInit {
 
   openDialog(cat?: Category) {
     this.editItem = cat || null;
-    this.form.reset({ name: cat?.name || '', color: cat?.color || '#3B82F6' });
+    this.form.reset({ name: cat?.name || '' });
     this.dialogVisible = true;
   }
 
   save() {
     if (this.form.invalid) return;
-    const cat: Category = { id: this.editItem?.id || 0, name: this.form.value.name!, color: this.form.value.color! };
+    const cat: Category = { id: this.editItem?.id || 0, name: this.form.value.name! };
     this.data.saveCategory(cat).subscribe(() => {
       this.msg.add({ severity: 'success', summary: 'Saved', detail: 'Category saved' });
       this.data.getCategories().subscribe(c => this.categories = c);

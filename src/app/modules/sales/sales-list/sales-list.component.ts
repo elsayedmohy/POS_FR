@@ -68,7 +68,7 @@ import { InputIconModule } from 'primeng/inputicon';
         <p-button
           *ngIf="dateRange || searchQuery"
           label="Clear"
-          severity="secondary"
+
           [text]="true"
           size="small"
           (onClick)="clearFilter()"

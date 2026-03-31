@@ -1,9 +1,12 @@
+import { Product } from '../../modules/products/models/product';
+
 export interface User {
     id: number;
-    fullName: string;
+    name: string;
+    storeName?: string;
     email: string;
     phone?: string;
-    role: 'admin' | 'cashier';
+    role: 'ADMIN' | 'CASHIER';
     status: 'active' | 'inactive';
     createdAt?: string;
 }
@@ -19,27 +22,9 @@ export interface LoginRequest {
     password: string;
 }
 
-export interface Product {
-    id: number;
-    name: string;
-    sku: string;
-    price: number;
-    cost: number;
-    stock: number;
-    categoryId: number;
-    categoryName?: string;
-    barcode?: string;
-    description?: string;
-    image?: string;
-    active: boolean;
-}
 
-export interface Category {
-    id: number;
-    name: string;
-    color: string;
-    productCount?: number;
-}
+
+
 
 export interface CartItem {
     product: Product;
@@ -89,15 +74,16 @@ export interface StoreSettings {
 }
 
 export interface DashboardStats {
-    totalSales: number;
-    totalRevenue: number;
-    totalProducts: number;
-    totalUsers: number;
-    todayRevenue: number;
-    weekRevenue: number;
-    monthRevenue: number;
-    salesTrend: { label: string; value: number }[];
-    topProducts: { name: string; sold: number; revenue: number }[];
+  totalSales: number;
+  totalOrders: number;
+  totalUsers: number;
+  totalProducts: number;
+  totalRevenue: number;
+  todayRevenue: number;
+  weekRevenue: number;
+  monthRevenue: number;
+  salesTrend: { label: string; value: number }[];
+  topProducts: {productId :number,  productName: string; totalQuantity: number }[];
 }
 
 export interface ApiResponse<T> {

@@ -32,17 +32,17 @@ export const AppPreset = definePreset(Aura, {
       light: {
         surface: {
           0: '#ffffff',
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
-          300: '#cbd5e1',
-          400: '#94a3b8',
-          500: '#64748b',
-          600: '#475569',
-          700: '#334155',
-          800: '#1e293b',
-          900: '#0f172a',
-          950: '#020617',
+          50: '{zinc.50}',
+          100: '{zinc.100}',
+          200: '{zinc.200}',
+          300: '{zinc.300}',
+          400: '{zinc.400}',
+          500: '{zinc.500}',
+          600: '{zinc.600}',
+          700: '{zinc.700}',
+          800: '{zinc.800}',
+          900: '{zinc.900}',
+          950: '{zinc.950}',
         },
 
         primary: {
@@ -90,23 +90,22 @@ export const AppPreset = definePreset(Aura, {
 
       dark: {
         surface: {
-          0: '#050509',
-          50: '#0b0b13',
-          100: '#0f0f1a',
-          200: '#141423',
-          300: '#1c1c2e',
-          400: '#2a2a40',
-          500: '#3b3b5c',
-          600: '#6b6b8f',
-          700: '#a1a1c2',
-          800: '#d1d1e0',
-          900: '#ececf5',
-          950: '#f8f8fc',
+          0: '#ffffff',
+          50: '#fafafa',
+          100: '#f5f5f5',
+          200: '#e5e5e5',
+          300: '#d4d4d4',
+          400: '#a3a3a3',
+          500: '#737373',
+          600: '#525252',
+          700: '#404040',
+          800: '#262626',
+          900: '#171717',
+          950: '#0a0a0a',
         },
 
         primary: {
           color: '{primary.400}',
-          contrastColor: '#000',
           hoverColor: '{primary.300}',
           activeColor: '{primary.200}',
         },
@@ -131,9 +130,9 @@ export const AppPreset = definePreset(Aura, {
         },
 
         content: {
-          background: '{surface.0}',
-          hoverBackground: '{surface.100}',
-          borderColor: 'rgba(255,255,255,0.08)',
+          // background: '{surface.900}',
+          background: 'transparent',
+          hoverBackground: '{surface.950}',
         },
 
         overlay: {
@@ -150,8 +149,6 @@ export const AppPreset = definePreset(Aura, {
           placeholderColor: '{surface.600}',
           color: '{text.color}',
         },
-
-
 
         navigation: {
           item: {

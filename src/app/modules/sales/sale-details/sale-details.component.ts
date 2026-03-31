@@ -29,7 +29,7 @@ import autoTable from 'jspdf-autotable';
     <div class="page-header">
       <h1>Sale #{{ sale?.id }}</h1>
       <div class="header-actions">
-        <p-button icon="pi pi-arrow-left" label="Back" severity="secondary" [outlined]="true" [routerLink]="['/sales']" size="small" />
+        <p-button icon="pi pi-arrow-left" label="Back"  [outlined]="true" [routerLink]="['/sales']" size="small" />
         <p-button icon="pi pi-download" label="Export PDF" (onClick)="exportPDF()" size="small" />
       </div>
     </div>

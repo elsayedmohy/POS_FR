@@ -16,11 +16,18 @@ function passwordsMatch(control: AbstractControl): ValidationErrors | null {
 }
 
 @Component({
-    selector: 'app-register',
-    standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslateModule,
-        InputTextModule, PasswordModule, ButtonModule],
-    template: `
+  selector: 'app-register',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    TranslateModule,
+    InputTextModule,
+    PasswordModule,
+    ButtonModule,
+  ],
+  template: `
     <div class="auth-container">
       <div class="auth-card">
         <div class="auth-logo">
@@ -32,15 +39,39 @@ function passwordsMatch(control: AbstractControl): ValidationErrors | null {
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
           <div class="form-group">
             <label>{{ 'AUTH.FULL_NAME' | translate }}</label>
-            <input pInputText formControlName="fullName" [placeholder]="'AUTH.FULL_NAME' | translate" class="w-full" />
-            <small class="p-error" *ngIf="form.get('fullName')?.touched && form.get('fullName')?.invalid">
+            <input
+              pInputText
+              formControlName="name"
+              [placeholder]="'AUTH.FULL_NAME' | translate"
+              class="w-full"
+            />
+            <small class="p-error" *ngIf="form.get('name')?.touched && form.get('name')?.invalid">
+              {{ 'VALIDATION.REQUIRED' | translate }}
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label>{{ 'SETTINGS.STORE_NAME' | translate }}</label>
+            <input
+              pInputText
+              formControlName="storeName"
+              [placeholder]="'SETTINGS.STORE_NAME' | translate"
+              class="w-full"
+            />
+            <small class="p-error" *ngIf="form.get('name')?.touched && form.get('name')?.invalid">
               {{ 'VALIDATION.REQUIRED' | translate }}
             </small>
           </div>
 
           <div class="form-group">
             <label>{{ 'AUTH.EMAIL' | translate }}</label>
-            <input pInputText formControlName="email" type="email" [placeholder]="'AUTH.EMAIL' | translate" class="w-full" />
+            <input
+              pInputText
+              formControlName="email"
+              type="email"
+              [placeholder]="'AUTH.EMAIL' | translate"
+              class="w-full"
+            />
             <small class="p-error" *ngIf="form.get('email')?.touched && form.get('email')?.invalid">
               {{ 'VALIDATION.EMAIL_INVALID' | translate }}
             </small>
@@ -48,22 +79,43 @@ function passwordsMatch(control: AbstractControl): ValidationErrors | null {
 
           <div class="form-group">
             <label>{{ 'AUTH.PASSWORD' | translate }}</label>
-            <p-password formControlName="password" [placeholder]="'AUTH.PASSWORD' | translate"  [toggleMask]="true" />
-            <small class="p-error" *ngIf="form.get('password')?.touched && form.get('password')?.invalid">
+            <p-password
+              formControlName="password"
+              [placeholder]="'AUTH.PASSWORD' | translate"
+              [toggleMask]="true"
+            />
+            <small
+              class="p-error"
+              *ngIf="form.get('password')?.touched && form.get('password')?.invalid"
+            >
               {{ 'VALIDATION.REQUIRED' | translate }}
             </small>
           </div>
 
           <div class="form-group">
             <label>{{ 'AUTH.CONFIRM_PASSWORD' | translate }}</label>
-            <p-password formControlName="confirmPassword" [feedback]="false" [placeholder]="'AUTH.CONFIRM_PASSWORD' | translate"  [toggleMask]="true" />
-            <small class="p-error" *ngIf="form.hasError('passwordsMismatch') && form.get('confirmPassword')?.touched">
+            <p-password
+              formControlName="confirmPassword"
+              [feedback]="false"
+              [placeholder]="'AUTH.CONFIRM_PASSWORD' | translate"
+              [toggleMask]="true"
+            />
+            <small
+              class="p-error"
+              *ngIf="form.hasError('passwordsMismatch') && form.get('confirmPassword')?.touched"
+            >
               {{ 'VALIDATION.PASSWORDS_MISMATCH' | translate }}
             </small>
           </div>
 
-          <p-button [label]="'AUTH.REGISTER' | translate" type="submit" [loading]="loading"
-            [disabled]="form.invalid" styleClass="w-full" size="large" />
+          <p-button
+            [label]="'AUTH.REGISTER' | translate"
+            type="submit"
+            [loading]="loading"
+            [disabled]="form.invalid"
+            styleClass="w-full"
+            size="large"
+          />
         </form>
 
         <div class="auth-footer">
@@ -72,38 +124,42 @@ function passwordsMatch(control: AbstractControl): ValidationErrors | null {
         </div>
       </div>
     </div>
-  `
+  `,
 })
 export class RegisterComponent {
-    loading = false;
+  loading = false;
 
-    form;
+  form;
 
-    constructor(
-        private fb: FormBuilder,
-        private auth: AuthService,
-        private router: Router,
-        private msg: MessageService
-    ) {
-      this.form = this.fb.group(
-        {
-          fullName: ['', Validators.required],
-          email: ['', [Validators.required, Validators.email]],
-          password: ['', [Validators.required, Validators.minLength(6)]],
-          confirmPassword: ['', Validators.required],
-        },
-        { validators: passwordsMatch },
-      );
-    }
+  constructor(
+    private fb: FormBuilder,
+    private auth: AuthService,
+    private router: Router,
+    private msg: MessageService,
+  ) {
+    this.form = this.fb.group(
+      {
+        name: ['', Validators.required],
+        storeName: ['', Validators.required],
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', [Validators.required, Validators.minLength(6)]],
+        confirmPassword: ['', Validators.required],
+      },
+      { validators: passwordsMatch },
+    );
+  }
 
-
-
-    onSubmit() {
-        if (this.form.invalid) return;
-        this.loading = true;
-        this.auth.register(this.form.value).subscribe({
-            next: () => { this.loading = false; this.router.navigate(['/dashboard']); },
-            error: () => { this.loading = false; }
-        });
-    }
+  onSubmit() {
+    if (this.form.invalid) return;
+    this.loading = true;
+    this.auth.register(this.form.value).subscribe({
+      next: () => {
+        this.loading = false;
+        this.router.navigate(['/auth/login']);
+      },
+      error: () => {
+        this.loading = false;
+      },
+    });
+  }
 }

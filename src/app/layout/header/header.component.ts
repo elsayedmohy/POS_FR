@@ -53,7 +53,7 @@ import { AuthService } from '../../core/services/auth.service';
       }
       .page-title {
         font-weight: 600;
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         color: var(--text-color);
       }
       .lang-badge {
@@ -94,7 +94,8 @@ import { AuthService } from '../../core/services/auth.service';
           severity="primary"
           (onClick)="toggleSidebar.emit()"
         />
-        <span class="page-title">{{ 'APP.NAME' | translate }}</span>
+<!--        <span class="page-title">{{ 'APP.NAME' | translate }}</span>-->
+        <span class="page-title">{{ user.storeName }}</span>
       </div>
       <div class="header-right">
         <div class="lang-badge" (click)="localization.toggleLang()">
@@ -110,12 +111,12 @@ import { AuthService } from '../../core/services/auth.service';
         />
         <div class="user-info">
           <p-avatar
-            [label]="(user?.fullName || 'U').charAt(0).toUpperCase()"
+            [label]="(user?.name || 'U').charAt(0).toUpperCase()"
             [style]="{ 'background-color': 'var(--primary-500)', color: 'var(--primary-900)' }"
             shape="circle"
           />
           <div class="d-none d-md-block">
-            <div class="user-name">{{ user?.fullName }}</div>
+            <div class="user-name">{{ user?.name }}</div>
             <div class="user-role">{{ user?.role | titlecase }}</div>
           </div>
         </div>

@@ -12,13 +12,20 @@ import { MessageService, ConfirmationService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { AppPreset } from '../theme/theme.preset';
+import { loaderInterceptor } from './core/interceptors/loader.interceptor';
 
 
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes, withComponentInputBinding()),
-    provideHttpClient(withInterceptors([jwtInterceptor, errorInterceptor])),
+    provideHttpClient(
+      withInterceptors([
+        loaderInterceptor,
+        jwtInterceptor,
+        errorInterceptor
+      ])
+    ),
     providePrimeNG({
       ripple: true,
       theme: {
@@ -42,36 +49,3 @@ export const appConfig: ApplicationConfig = {
     ConfirmationService,
   ],
 };
-
-
-// export const appConfig: ApplicationConfig = {
-//   providers: [
-//     provideRouter(routes, withComponentInputBinding()),
-//     provideHttpClient(withInterceptors([jwtInterceptor, errorInterceptor])),
-//     providePrimeNG({
-//       ripple: true,
-//       theme: {
-//         preset: AppPreset,
-//         options: {
-//           prefix: 'p',
-//           darkModeSelector: '.app-dark',
-//           cssLayer: {
-//             name: 'primeng',
-//             order: 'app-reset, primeng, app-styles',
-//           },
-//         },
-//       },
-//     }),
-//     ThemeService,
-//     importProvidersFrom(
-//       TranslateModule.forRoot({
-//         loader: provideTranslateHttpLoader({
-//           prefix: './assets/i18n/',
-//           suffix: '.json',
-//         }),
-//       }),
-//     ),
-//     MessageService,
-//     ConfirmationService,
-//   ],
-// };
