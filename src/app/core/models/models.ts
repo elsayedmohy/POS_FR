@@ -1,19 +1,26 @@
 import { Product } from '../../modules/products/models/product';
+import { UserRole } from './enums';
 
 export interface User {
-    id: number;
-    name: string;
-    storeName?: string;
-    email: string;
-    phone?: string;
-    role: 'ADMIN' | 'CASHIER';
-    status: 'active' | 'inactive';
-    createdAt?: string;
+  id: number;
+  name: string;
+  storeName?: string;
+  email: string;
+  phone?: string;
+  role: UserRole;
+  createdAt?: string;
+}
+
+export interface UserRequest {
+  id?: number;
+  name: string;
+  email: string;
+  phone?: string;
+  role: UserRole;
 }
 
 export interface AuthResponse {
     token: string;
-    refreshToken: string;
     user: User;
 }
 
@@ -98,3 +105,4 @@ export interface PaginatedResponse<T> {
     page: number;
     limit: number;
 }
+

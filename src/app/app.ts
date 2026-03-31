@@ -13,6 +13,7 @@ import { Loader } from './shared/components/loader/loader';
     <p-toast position="top-right"></p-toast>
     <p-confirmDialog />
     <app-loader></app-loader>
+
     <router-outlet />
   `,
 })

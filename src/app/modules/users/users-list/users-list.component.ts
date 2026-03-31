@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { TableModule } from 'primeng/table';
@@ -12,38 +12,69 @@ import { DataService } from '../../../core/services/data.service';
 import { User } from '../../../core/models/models';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { UserRole } from '../../../core/models/enums';
+import { UserService } from '../services/user.service';
 
 @Component({
-    selector: 'app-users-list',
-    standalone: true,
-    imports: [CommonModule, TranslateModule, TableModule, ButtonModule, TagModule,
-        InputTextModule, FormsModule, RouterLink, IconFieldModule, InputIconModule],
-    template: `
+  selector: 'app-users-list',
+  standalone: true,
+  imports: [
+    CommonModule,
+    TranslateModule,
+    TableModule,
+    ButtonModule,
+    TagModule,
+    InputTextModule,
+    FormsModule,
+    RouterLink,
+    IconFieldModule,
+    InputIconModule,
+  ],
+  template: `
     <div class="page-header">
       <h1>{{ 'USERS.TITLE' | translate }}</h1>
-      <p-button icon="pi pi-user-plus" [label]="'USERS.ADD_USER' | translate" [routerLink]="['/users/new']" size="small" />
+      <div class="flex-1"></div>
+      <p-button
+        icon="pi pi-user-plus"
+        [label]="'USERS.ADD_USER' | translate"
+        [routerLink]="['/users/new']"
+        size="small"
+      />
     </div>
 
     <div class="card">
-      <div style="display:flex; gap:0.75rem; margin-bottom:1.25rem; flex-wrap:wrap; align-items:center;">
+      <div
+        style="display:flex; gap:0.75rem; margin-bottom:1.25rem; flex-wrap:wrap; align-items:center;"
+      >
         <p-iconfield>
           <p-inputicon class="pi pi-search" />
-          <input pInputText [(ngModel)]="searchQuery" placeholder="Search users..." (input)="filter()" />
+          <input pInputText [(ngModel)]="users.searchQuery" placeholder="Search users..." />
         </p-iconfield>
         <div style="display:flex; gap:0.5rem;">
-          <p-button *ngFor="let r of roles" [label]="r" [outlined]="selectedRole !== r"
-            (onClick)="selectedRole = r; filter()" size="small"  />
+          <p-button
+            label="All"
+            [outlined]="users.selectedRole() !== null"
+            size="small"
+            (onClick)="users.updateRole(null)"
+          />
+          @for (role of users.roles; track $index) {
+            <p-button
+              [label]="role.label"
+              [outlined]="users.selectedRole() !== role.label.toUpperCase()"
+              size="small"
+              (onClick)="users.updateRole(role.value)"
+            />
+          }
         </div>
       </div>
 
-      <p-table [value]="filteredUsers" [paginator]="true" [rows]="10" >
+      <p-table [value]="users.filteredUsers()" [paginator]="true" [rows]="10">
         <ng-template pTemplate="header">
           <tr>
             <th>{{ 'USERS.FULL_NAME' | translate }}</th>
             <th>{{ 'USERS.EMAIL' | translate }}</th>
             <th>{{ 'USERS.PHONE' | translate }}</th>
             <th>{{ 'USERS.ROLE' | translate }}</th>
-            <th>{{ 'USERS.STATUS' | translate }}</th>
             <th>Joined</th>
             <th>{{ 'COMMON.ACTIONS' | translate }}</th>
           </tr>
@@ -52,8 +83,10 @@ import { InputIconModule } from 'primeng/inputicon';
           <tr>
             <td>
               <div style="display:flex; align-items:center; gap: 0.75rem;">
-                <div style="width:36px;height:36px;border-radius:50%;background:var(--primary-500);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;flex-shrink:0;">
-                  {{ user.name.charAt(0) }}
+                <div
+                  style="width:36px;height:36px;border-radius:50%;color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;flex-shrink:0;"
+                >
+                  {{ user.name.charAt(0).toUpperCase() }}
                 </div>
                 <span style="font-weight:500;">{{ user.name }}</span>
               </div>
@@ -61,63 +94,69 @@ import { InputIconModule } from 'primeng/inputicon';
             <td>{{ user.email }}</td>
             <td>{{ user.phone || '—' }}</td>
             <td>
-              <p-tag [value]="user.role | titlecase" [severity]="user.role === 'admin' ? 'warn' : 'info'" [rounded]="true" />
+              <p-tag
+                [value]="user.role | titlecase"
+                [severity]="user.role === UserRole.ADMIN ? 'warn' : 'info'"
+                [rounded]="true"
+              />
             </td>
+            <td>{{ user.createdAt | date: 'MMM y' }}</td>
             <td>
-              <p-tag [value]="user.status | titlecase" [severity]="user.status === 'active' ? 'success' : 'secondary'" />
-            </td>
-            <td style="color:var(--text-color-secondary);">{{ user.createdAt | date:'MMM y' }}</td>
-            <td>
-              <div style="display:flex; gap:0.5rem;">
-                <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" size="small" [routerLink]="['/users/edit', user.id]" />
-                <p-button icon="pi pi-trash" [text]="true" [rounded]="true" size="small" severity="danger" (onClick)="deleteUser(user)" />
-              </div>
+              @if (user.role !== UserRole.ADMIN) {
+                <div style="display:flex; gap:0.5rem;">
+                  <p-button
+                    icon="pi pi-pencil"
+                    [text]="true"
+                    [rounded]="true"
+                    size="small"
+                    [routerLink]="['/users/edit', user.id]"
+                  />
+                  <p-button
+                    icon="pi pi-trash"
+                    [text]="true"
+                    [rounded]="true"
+                    size="small"
+                    severity="danger"
+                    (onClick)="deleteUser(user)"
+                  />
+                </div>
+              }
             </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
-          <tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-color-secondary);">{{ 'COMMON.NO_DATA' | translate }}</td></tr>
+          <tr>
+            <td colspan="7" style="text-align:center;padding:2rem;">
+              {{ 'COMMON.NO_DATA' | translate }}
+            </td>
+          </tr>
         </ng-template>
       </p-table>
     </div>
-  `
+  `,
 })
 export class UsersListComponent implements OnInit {
-    users: User[] = [];
-    filteredUsers: User[] = [];
-    roles = ['All', 'admin', 'cashier'];
-    selectedRole = 'All';
-    searchQuery = '';
+  users = inject(UserService);
+  constructor(
+    private data: DataService,
+    private confirm: ConfirmationService,
+    private msg: MessageService,
+  ) {
+    this.users.load();
+  }
 
-    constructor(
-        private data: DataService,
-        private confirm: ConfirmationService,
-        private msg: MessageService
-    ) { }
+  ngOnInit() {}
 
-    ngOnInit() {
-        this.data.getUsers().subscribe(u => { this.users = u; this.filteredUsers = u; });
-    }
-
-    filter() {
-        this.filteredUsers = this.users.filter(u => {
-            const matchRole = this.selectedRole === 'All' || u.role === this.selectedRole;
-            const q = this.searchQuery.toLowerCase();
-            const matchSearch = !q || u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q);
-            return matchRole && matchSearch;
+  deleteUser(user: User) {
+    this.confirm.confirm({
+      message: `Delete user "${user.name}"?`,
+      accept: () => {
+        this.users.delete(user.id).subscribe(() => {
+          this.msg.add({ severity: 'success', summary: 'Deleted', detail: 'User deleted' });
         });
-    }
+      },
+    });
+  }
 
-    deleteUser(user: User) {
-        this.confirm.confirm({
-            message: `Delete user "${user.name}"?`,
-            accept: () => {
-                this.data.deleteUser(user.id).subscribe(() => {
-                    this.users = this.users.filter(u => u.id !== user.id);
-                    this.filter();
-                    this.msg.add({ severity: 'success', summary: 'Deleted', detail: 'User deleted' });
-                });
-            }
-        });
-    }
+  protected readonly UserRole = UserRole;
 }

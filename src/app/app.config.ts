@@ -27,6 +27,9 @@ export const appConfig: ApplicationConfig = {
       ])
     ),
     providePrimeNG({
+      overlayOptions: {
+        appendTo: 'body'
+      },
       ripple: true,
       theme: {
         preset: AppPreset,

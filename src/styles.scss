@@ -525,18 +525,22 @@
     #050509;
   }
 
-  .app-dark .card,
-  .app-dark .p-component:not(.p-toast):not(.p-toast *) {
+  .app-dark .card {
     background: rgba(168, 85, 247, 0.03) ;
     backdrop-filter: blur(20px);
     border: 1px solid rgba(168, 85, 247, 0.15);
     border-radius: var(--radius-md);
-    overflow: hidden;
+    //overflow: hidden;
   }
 
 
   .app-dark p-table {
     background: transparent !important ;
+  }
+
+  .app-dark .p-component:not(.p-toast):not(.p-toast *)  {
+    border: 1px solid rgba(168, 85, 247, 0.15);
+    border-radius: var(--radius-md);
   }
 
   .custom-toast {

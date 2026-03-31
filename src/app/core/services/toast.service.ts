@@ -28,7 +28,6 @@ export class ToastService {
       severity,
       summary,
       detail,
-      life: 3000,
       styleClass: 'custom-toast',
     });
   }

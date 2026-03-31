@@ -1,18 +1,14 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import {
-     Sale, User, DashboardStats, StoreSettings,
-    PaginatedResponse
-} from '../models/models';
+import { Sale, StoreSettings, User } from '../models/models';
 import { Category } from '../../modules/products/models/category';
 import { Product } from '../../modules/products/models/product';
+import { UserRole } from '../models/enums';
 
 @Injectable({ providedIn: 'root' })
 export class DataService {
   // ─── Mock Data ──────────────────────────────────────────────────
-  private categories: Category[] = [
-
-  ];
+  private categories: Category[] = [];
 
   private products: Product[] = [];
 
@@ -22,8 +18,7 @@ export class DataService {
       name: 'Ahmed Al-Rashidi',
       email: 'ahmed@pos.com',
       phone: '+966501234567',
-      role: 'ADMIN',
-      status: 'active',
+      role: UserRole.ADMIN,
       createdAt: '2024-01-15',
     },
     {
@@ -31,8 +26,7 @@ export class DataService {
       name: 'Sara Johnson',
       email: 'sara@pos.com',
       phone: '+966502345678',
-      role: 'CASHIER',
-      status: 'active',
+      role: UserRole.CASHIER,
       createdAt: '2024-02-10',
     },
     {
@@ -40,8 +34,7 @@ export class DataService {
       name: 'Mohammed Ali',
       email: 'mo@pos.com',
       phone: '+966503456789',
-      role: 'CASHIER',
-      status: 'active',
+      role: UserRole.CASHIER,
       createdAt: '2024-03-05',
     },
     {
@@ -49,8 +42,7 @@ export class DataService {
       name: 'Lina Hassan',
       email: 'lina@pos.com',
       phone: '+966504567890',
-      role: 'CASHIER',
-      status: 'inactive',
+      role: UserRole.CASHIER,
       createdAt: '2024-01-20',
     },
   ];

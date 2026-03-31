@@ -227,7 +227,7 @@ export class ProductFormComponent implements OnInit {
           barcode: product.barcode,
           price: product.price,
           stock: product.stock,
-          category: category,
+          category: category.id,
           active: product.active,
           description: product.description,
         });
