@@ -28,8 +28,19 @@ export class ProductService {
   readonly activeProducts = computed(() => this._products().filter((p) => p.active));
   readonly totalCount = computed(() => this._products().length);
   searchQuery = signal('');
-  filteredProducts = computed(() => {
+  readonly filteredProducts = computed(() => {
     const products = this.products();
+    const search = this.searchQuery().toLowerCase();
+    const category = this.selectedCategory();
+    return products.filter((p) => {
+      const matchesCat =
+        category.name === 'All' || category.id === p.categoryId || p.categoryName === category.name;
+      const matchesSearch = !search || p.name.toLowerCase().includes(search);
+      return matchesCat && matchesSearch;
+    });
+  });
+  readonly filteredActiveProducts = computed(() => {
+    const products = this.products().filter((p) => p.active);
     const search = this.searchQuery().toLowerCase();
     const category = this.selectedCategory();
     return products.filter((p) => {
