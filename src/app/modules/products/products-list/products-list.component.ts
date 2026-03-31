@@ -75,8 +75,6 @@ import { ToastService } from '../../../core/services/toast.service';
               [outlined]="products.selectedCategory() !== cat"
               (onClick)="categories.updateSelected(cat)"
             />
-            <!--              [outlined]="selectedCategory() !== ca"-->
-            <!--              (onClick)="selectedCategory.set(cat)"-->
           }
         </div>
       </div>
@@ -91,15 +89,18 @@ import { ToastService } from '../../../core/services/toast.service';
         <ng-template pTemplate="header">
           <tr>
             <th pSortableColumn="name">
-              {{ 'PRODUCTS.PRODUCT_NAME' | translate }} <p-sortIcon field="name" />
+              {{ 'PRODUCTS.PRODUCT_NAME' | translate }}
+              <p-sortIcon field="name" />
             </th>
             <th>{{ 'PRODUCTS.SKU' | translate }}</th>
             <th>{{ 'PRODUCTS.CATEGORY' | translate }}</th>
             <th pSortableColumn="price">
-              {{ 'PRODUCTS.PRICE' | translate }} <p-sortIcon field="price" />
+              {{ 'PRODUCTS.PRICE' | translate }}
+              <p-sortIcon field="price" />
             </th>
             <th pSortableColumn="stock">
-              {{ 'PRODUCTS.STOCK' | translate }} <p-sortIcon field="stock" />
+              {{ 'PRODUCTS.STOCK' | translate }}
+              <p-sortIcon field="stock" />
             </th>
             <th>{{ 'PRODUCTS.ACTIVE' | translate }}</th>
             <th>{{ 'COMMON.ACTIONS' | translate }}</th>
@@ -110,7 +111,13 @@ import { ToastService } from '../../../core/services/toast.service';
             <td>
               <div style="display:flex; align-items:center; gap:0.75rem;">
                 <div
-                  style="width:36px;height:36px;border-radius:8px;;display:flex;align-items:center;justify-content:center;font-size:1.2rem;"
+                  style="width:36px;
+                  height:36px;
+                  border-radius:8px;
+                  display:flex;
+                  align-items:center;
+                  justify-content:center;
+                  font-size:1.2rem;"
                 >
                   📦
                 </div>
@@ -119,8 +126,8 @@ import { ToastService } from '../../../core/services/toast.service';
             </td>
             <td>
               <code style=";padding:2px 6px;border-radius:4px;font-size:0.8rem;">{{
-                product.barcode
-              }}</code>
+                  product.barcode
+                }}</code>
             </td>
             <td>{{ product.categoryName }}</td>
             <td style="font-weight:600;">

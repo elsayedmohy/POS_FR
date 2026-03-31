@@ -1,4 +1,4 @@
-import { Injectable, signal, computed, inject } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { tap } from 'rxjs';
 import { Category } from '../models/category';
 import { ApiService } from '../../../core/services/api.service';
@@ -18,9 +18,15 @@ export class CategoryService {
   readonly selectedCategory = this._selectedCategory.asReadonly();
   readonly loading = this._loading.asReadonly();
   readonly error = this._error.asReadonly();
-
+  searchQuery = signal('');
   readonly activeCategories = computed(() => this._categories().filter((c) => c.active));
-  readonly filteredCategories = computed(() => this._categories());
+  readonly filteredCategories = computed(() => {
+    const categories = this.categories();
+    const search = this.searchQuery().toLowerCase();
+    return categories.filter((p) => {
+      return !search || p.name.toLowerCase().includes(search);
+    });
+  });
 
   load() {
     if (this._loaded()) return;
@@ -33,8 +39,8 @@ export class CategoryService {
         tap({
           next: (data) => {
             this._categories.set(data);
-            if(data.length > 0) {
-              data.unshift({id : null,name:"All"})
+            if (data.length > 0) {
+              data.unshift({ id: null, name: 'All' });
               this._selectedCategory.set(data[0]);
             }
             this._loaded.set(true);
@@ -55,30 +61,33 @@ export class CategoryService {
   }
 
   add(category: Category) {
-    return this.api
-      .post<Category>(`${this.c_end_point}`, category)
-      .pipe(tap((created) => this._categories.update((list) => [...list, created])));
+    return this.api.post<Category>(`${this.c_end_point}`, category).pipe(
+      tap((created) => {
+        this._categories.update((list) => [...list, created]);
+        this.refresh();
+      }),
+    );
   }
 
   update(category: Category) {
-    return this.api
-      .put<Category>(`${this.c_end_point}/${category.id}`, category)
-      .pipe(
-        tap((updated) =>
-          this._categories.update((list) => list.map((c) => (c.id === updated.id ? updated : c))),
-        ),
-      );
+    return this.api.put<Category>(`${this.c_end_point}/${category.id}`, category).pipe(
+      tap((updated) => {
+        (this._categories.update((list) => list.map((c) => (c.id === updated.id ? updated : c))),
+          this.refresh());
+      }),
+    );
   }
 
   remove(id: number) {
-    return this.api
-      .delete(`${this.c_end_point}/${id}`)
-      .pipe(tap(() => this._categories.update((list) => list.filter((c) => c.id !== id))));
+    return this.api.delete(`${this.c_end_point}/${id}`).pipe(
+      tap(() => {
+        this._categories.update((list) => list.filter((c) => c.id !== id));
+        this.refresh();
+      }),
+    );
   }
-
 
   updateSelected(category: Category) {
     this._selectedCategory.set(category);
   }
-
 }
