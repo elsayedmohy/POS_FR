@@ -8,7 +8,7 @@ export class LocalizationService {
 
     constructor(private translate: TranslateService) {
         translate.addLangs(['en', 'ar']);
-        translate.setDefaultLang('en');
+        translate.setFallbackLang('en');
     }
 
     init(): void {

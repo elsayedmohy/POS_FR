@@ -53,7 +53,7 @@ import { LocalizationService } from '../../core/services/localization.service';
         grid-column: span 2;
       }
       .theme-card {
-        border: 2px solid var(--surface-border);
+        border: 2px solid transparent;
         border-radius: 16px;
         padding: 1.5rem;
         cursor: pointer;
@@ -61,14 +61,13 @@ import { LocalizationService } from '../../core/services/localization.service';
         text-align: center;
       }
       .theme-card:hover {
-        border-color: var(--primary-300);
+        border-color: var(--p-primary-900);
       }
       .theme-card.selected {
-        border-color: var(--primary-500);
-        background: var(--primary-50);
+        border-color: var(--p-primary-900);
       }
       .lang-card {
-        border: 2px solid var(--surface-border);
+        border: 2px solid transparent;
         border-radius: 12px;
         padding: 1rem;
         cursor: pointer;
@@ -77,9 +76,11 @@ import { LocalizationService } from '../../core/services/localization.service';
         gap: 0.75rem;
         align-items: center;
       }
+      .lang-card:hover {
+        border-color: var(--p-primary-900);
+      }
       .lang-card.selected {
-        border-color: var(--primary-500);
-        background: var(--primary-50);
+        border-color: var(--p-primary-900);
       }
     `,
   ],
@@ -157,8 +158,7 @@ import { LocalizationService } from '../../core/services/localization.service';
                 </div>
                 <div class="form-field">
                   <label style="opacity:0;">placeholder</label>
-                  <small
-                    style="color:var(--text-color-secondary); line-height:1.5; padding-top:0.5rem;"
+                  <small style="line-height:1.5; padding-top:0.5rem;"
                     >Tax is automatically applied to all sales</small
                   >
                 </div>
@@ -197,9 +197,7 @@ import { LocalizationService } from '../../core/services/localization.service';
               >
                 <div style="font-size:2rem; margin-bottom:0.5rem;">☀️</div>
                 <div style="font-weight:600;">{{ 'SETTINGS.LIGHT_THEME' | translate }}</div>
-                <div style="font-size:0.8rem; color:var(--text-color-secondary); margin-top:4px;">
-                  Clean white interface
-                </div>
+                <div style="font-size:0.8rem; margin-top:4px;">Clean white interface</div>
               </div>
               <div
                 class="theme-card"
@@ -208,9 +206,7 @@ import { LocalizationService } from '../../core/services/localization.service';
               >
                 <div style="font-size:2rem; margin-bottom:0.5rem;">🌙</div>
                 <div style="font-weight:600;">{{ 'SETTINGS.DARK_THEME' | translate }}</div>
-                <div style="font-size:0.8rem; color:var(--text-color-secondary); margin-top:4px;">
-                  Easy on the eyes
-                </div>
+                <div style="font-size:0.8rem; margin-top:4px;">Easy on the eyes</div>
               </div>
             </div>
 
@@ -226,7 +222,7 @@ import { LocalizationService } from '../../core/services/localization.service';
                 <div style="font-size:1.5rem;">🇺🇸</div>
                 <div>
                   <div style="font-weight:600;">English</div>
-                  <div style="font-size:0.8rem;color:var(--text-color-secondary);">LTR Layout</div>
+                  <div style="font-size:0.8rem">LTR Layout</div>
                 </div>
               </div>
               <div
@@ -237,7 +233,7 @@ import { LocalizationService } from '../../core/services/localization.service';
                 <div style="font-size:1.5rem;">🇸🇦</div>
                 <div>
                   <div style="font-weight:600;">العربية</div>
-                  <div style="font-size:0.8rem;color:var(--text-color-secondary);">RTL Layout</div>
+                  <div style="font-size:0.8rem">RTL Layout</div>
                 </div>
               </div>
             </div>

@@ -163,22 +163,27 @@ interface NavItem {
           <span class="nav-label" *ngIf="!collapsed">{{ item.label | translate }}</span>
         </a>
 
-        <div class="nav-section-label" *ngIf="!collapsed && isAdmin" style="margin-top: 1rem;">
-          Admin
-        </div>
-        <ng-container *ngIf="isAdmin">
-          <a
-            *ngFor="let item of adminItems"
-            [routerLink]="item.route"
-            routerLinkActive="active"
-            class="nav-item"
-            [pTooltip]="collapsed ? (item.label | translate) : ''"
-            tooltipPosition="right"
-          >
-            <i [class]="item.icon"></i>
-            <span class="nav-label" *ngIf="!collapsed">{{ item.label | translate }}</span>
-          </a>
-        </ng-container>
+        @if (!collapsed && isAdmin) {
+          <div class="nav-section-label" style="margin-top: 1rem;">Admin</div>
+        }
+        @if (isAdmin) {
+          <ng-container>
+            @for (item of adminItems; track $index) {
+              <a
+                [routerLink]="item.route"
+                routerLinkActive="active"
+                class="nav-item"
+                [pTooltip]="collapsed ? (item.label | translate) : ''"
+                tooltipPosition="right"
+              >
+                <i [class]="item.icon"></i>
+                @if (!collapsed) {
+                  <span class="nav-label">{{ item.label | translate }}</span>
+                }
+              </a>
+            }
+          </ng-container>
+        }
       </div>
 
       <div class="sidebar-footer">
@@ -189,7 +194,9 @@ interface NavItem {
           tooltipPosition="right"
         >
           <i class="pi pi-sign-out"></i>
-          <span *ngIf="!collapsed">{{ 'NAV.LOGOUT' | translate }}</span>
+          @if (!collapsed) {
+          <span >{{ 'NAV.LOGOUT' | translate }}</span>
+          }
         </div>
       </div>
     </nav>
