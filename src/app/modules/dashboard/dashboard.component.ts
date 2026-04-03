@@ -8,7 +8,6 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
-import { DataService } from '../../core/services/data.service';
 import { DashboardStats } from '../../core/models/models';
 import { LocalizationService } from '../../core/services/localization.service';
 import { ThemeService } from '../../core/services/theme.service';
@@ -144,13 +143,13 @@ import { Observable, take, tap } from 'rxjs';
           <ng-template pTemplate="body" let-item let-i="rowIndex">
             <tr>
               <td>
-                <span style="font-weight: 700; color: var(--primary-500);">#{{ i + 1 }}</span>
+                <span style="font-weight: 700; color: var(--p-primary-500);">#{{ i + 1 }}</span>
               </td>
               <td>
                 <span style="font-weight: 500;">{{ item.productName }}</span>
               </td>
               <td>{{ item.sold }}</td>
-              <td style="font-weight: 600;">{{ item.revenue | currency: 'SAR' }}</td>
+              <td style="font-weight: 600;">{{ item.revenue | currency }}</td>
               <td>
                 <div
                   style="background: var(--surface-200); border-radius: 4px; height: 6px; width: 100%; overflow: hidden;"
@@ -183,7 +182,6 @@ export class DashboardComponent implements OnInit {
   doughnutOptions: any;
 
   constructor(
-    private data: DataService,
     private dashboardService: DashboardService,
   ) {}
 

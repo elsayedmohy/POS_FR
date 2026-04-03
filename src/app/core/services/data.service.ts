@@ -175,7 +175,7 @@ export class DataService {
     address: '123 Market Street, Riyadh, Saudi Arabia',
     phone: '+966 11 123 4567',
     email: 'info@smartpos.sa',
-    currency: 'SAR',
+    currency : 'SAR',
     currencySymbol: '﷼',
     taxRate: 15,
     invoiceFooter: 'Thank you for your business! 🛍️',

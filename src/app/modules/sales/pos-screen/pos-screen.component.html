@@ -1,0 +1,194 @@
+<!--<div class="page-header">-->
+<!--  <h1>{{ 'POS.TITLE' | translate }}</h1>-->
+<!--</div>-->
+<div class="pos-wrapper">
+  <div class="products-panel">
+    <div style="margin-bottom:1rem;">
+      <p-iconfield>
+        <p-inputicon class="pi pi-search" />
+        <input
+          pInputText
+          [(ngModel)]="products.searchQuery"
+          [placeholder]="'POS.SEARCH_PRODUCTS' | translate"
+          class="w-full"
+        />
+      </p-iconfield>
+    </div>
+    <div class="cat-filters">
+      @for (cat of categories.filteredCategories(); track $index) {
+        <p-button
+          severity="contrast"
+          size="small"
+          (click)="categories.updateSelected(cat)"
+          [outlined]="products.selectedCategory() !== cat"
+          (onClick)="categories.updateSelected(cat)"
+        >
+          {{ cat.name }}
+        </p-button>
+      }
+    </div>
+    <div class="product-grid">
+      @for (product of products.filteredActiveProducts(); track $index) {
+        <div class="product-card" (click)="addToCart(product)">
+          <div class="product-image">📦</div>
+          <div class="product-name">{{ product.name }}</div>
+          <div class="product-price">{{ product.price | currency }}</div>
+          <div class="product-stock">{{ product.stock }} in stock</div>
+        </div>
+      }
+      @if (products.activeProducts().length === 0) {
+        <div
+          style="grid-column: 1/-1; text-align:center; padding:2rem; color:var(--text-color-secondary);"
+        >
+          {{ 'COMMON.NO_DATA' | translate }}
+        </div>
+      }
+    </div>
+  </div>
+
+  @if (!this.isAdmin()) {
+    <div class="cart-panel">
+      <div class="cart-header">
+        <h3 style="font-weight:700; display:flex; align-items:center; gap:0.5rem;">
+          🛒 {{ 'POS.CART' | translate }}
+          <span
+            *ngIf="cart.length"
+            style="background:var(--p-primary-500);color:white;border-radius:50%;width:20px;height:20px;font-size:0.75rem;display:flex;align-items:center;justify-content:center;"
+          >{{ totalItems }}</span
+          >
+        </h3>
+        <p-button
+          *ngIf="cart.length"
+          icon="pi pi-trash"
+          severity="danger"
+          [text]="true"
+          size="small"
+          (onClick)="clearCart()"
+        />
+      </div>
+
+      <div *ngIf="!cart.length" class="empty-cart">
+        <div style="font-size:3rem; margin-bottom:1rem;">🛒</div>
+        <p>{{ 'POS.EMPTY_CART' | translate }}</p>
+        <small>Tap a product to add it</small>
+      </div>
+
+      <div *ngIf="cart.length" class="cart-items">
+        <div *ngFor="let item of cart" class="cart-item">
+          <div class="item-info">
+            <div class="item-name">{{ item.product.name }}</div>
+            <div class="item-price">{{ item.unitPrice | currency }} each</div>
+          </div>
+          <div class="qty-control">
+            <button class="qty-btn" (click)="decreaseQty(item)">−</button>
+            <span class="qty-val">{{ item.quantity }}</span>
+            <button class="qty-btn" (click)="increaseQty(item)">+</button>
+          </div>
+          <div class="item-total">{{ item.totalPrice | currency }}</div>
+          <p-button
+            icon="pi pi-times"
+            [text]="true"
+            severity="danger"
+            size="small"
+            (onClick)="removeFromCart(item)"
+          />
+        </div>
+      </div>
+
+      <div *ngIf="cart.length" class="cart-footer">
+        <div class="total-row">
+          <span>{{ 'SALES.SUBTOTAL' | translate }}</span>
+          <span>{{ subtotal | currency }}</span>
+        </div>
+        <div class="total-row">
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <span>{{ 'SALES.DISCOUNT' | translate }}</span>
+            <input
+              pInputText
+              [(ngModel)]="discountValue"
+              type="number"
+              min="0"
+              max="100"
+              style="width:60px; height:28px; font-size:0.8rem; padding:0 6px;"
+              (input)="calcTotals()"
+            />
+            <span>%</span>
+          </div>
+          <span style="color: var(--p-red-500);">-{{ discountAmount | currency }}</span>
+        </div>
+        <div class="total-row">
+          <span>{{ 'SALES.TAX' | translate }} ({{ taxRate }}%)</span>
+          <span>{{ taxAmount | currency }}</span>
+        </div>
+        <div class="total-row grand-total">
+          <span>{{ 'SALES.TOTAL' | translate }}</span>
+          <span>{{ grandTotal | currency }}</span>
+        </div>
+
+        <div style="margin:0.75rem 0;">
+          <label
+            style="display:block; font-size:0.85rem; font-weight:500; margin-bottom:0.4rem;"
+          >{{ 'POS.CUSTOMER_NAME' | translate }}</label
+          >
+          <input
+            pInputText
+            [(ngModel)]="customerName"
+            class="w-full"
+            style="font-size:0.9rem;"
+          />
+        </div>
+
+        <p-button
+          [label]="'POS.CHECKOUT' | translate"
+          icon="pi pi-check"
+          styleClass="w-full"
+          size="large"
+          (onClick)="checkout()"
+        />
+      </div>
+    </div>
+
+  } @else {
+    <div
+      class="admin-message"
+    >
+      <p-tag
+        style="padding: 1rem;margin-bottom: 1rem"
+        severity='info'
+        [rounded]="true"
+      ><i class="pi pi-exclamation-circle"></i>
+
+      </p-tag>
+      <h3>Sales are handled by your team.
+        </h3>
+      <p >Adding to cart and processing sales is assigned to Cashier and Manager roles. Please ask a staff member to proceed.</p>
+    </div>
+  }
+</div>
+<p-dialog
+  [(visible)]="successDialog"
+  [modal]="true"
+  header="Sale Complete!"
+  [style]="{ width: '400px' }"
+  [closable]="false"
+>
+  <div style="text-align:center; padding:1rem 0;">
+    <h3 style="margin-bottom:0.5rem;">{{ 'COMMON.SUCCESS' | translate }}</h3>
+    <p style="color:var(--text-color-secondary); margin-bottom:1.5rem;">
+      Sale #{{ lastSaleId }} completed successfully
+    </p>
+    <div
+      style="border-radius:12px; padding:1rem; text-align:left;"
+    >
+      <div
+        style="display:flex; justify-content:space-between; font-size:1.1rem; font-weight:700; color:var(--p-primary-600);"
+      >
+        <span>Total Paid:</span><span>{{ grandTotal | currency }}</span>
+      </div>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button label="New Sale" icon="pi pi-plus" (onClick)="newSale()" />
+    <p-button label="View Sales" icon="pi pi-list" [outlined]="true" (onClick)="goToSales()" />
+  </ng-template>
+</p-dialog>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { TableModule } from 'primeng/table';
@@ -7,11 +7,12 @@ import { TagModule } from 'primeng/tag';
 import { DatePickerModule } from 'primeng/datepicker';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { DataService } from '../../../core/services/data.service';
 import { Sale } from '../../../core/models/models';
 import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { AuthService } from '../../../core/services/auth.service';
+import { SalesService } from '../services/sales.service';
 
 @Component({
   selector: 'app-sales-list',
@@ -43,7 +44,15 @@ import { InputIconModule } from 'primeng/inputicon';
   template: `
     <div class="page-header">
       <h1>{{ 'SALES.TITLE' | translate }}</h1>
-      <p-button icon="pi pi-shopping-cart" label="New Sale" [routerLink]="['/pos']" size="small" />
+      @if (!this.auth.isAdmin()) {
+        <div class="flex-1"></div>
+        <p-button
+          icon="pi pi-shopping-cart"
+          label="New Sale"
+          [routerLink]="['/pos']"
+          size="small"
+        />
+      }
     </div>
 
     <div class="card">
@@ -52,7 +61,7 @@ import { InputIconModule } from 'primeng/inputicon';
           <p-inputicon class="pi pi-search" />
           <input
             pInputText
-            [(ngModel)]="searchQuery"
+            [(ngModel)]="sales.searchQuery"
             placeholder="Search by customer or cashier..."
             (input)="filter()"
           />
@@ -63,12 +72,10 @@ import { InputIconModule } from 'primeng/inputicon';
           [showIcon]="true"
           placeholder="Filter by date range"
           (onSelect)="filter()"
-
         />
         <p-button
           *ngIf="dateRange || searchQuery"
           label="Clear"
-
           [text]="true"
           size="small"
           (onClick)="clearFilter()"
@@ -76,7 +83,7 @@ import { InputIconModule } from 'primeng/inputicon';
       </div>
 
       <p-table
-        [value]="filtered"
+        [value]="sales.filteredSales()"
         [paginator]="true"
         [rows]="10"
         [rowsPerPageOptions]="[5, 10, 25]"
@@ -96,12 +103,12 @@ import { InputIconModule } from 'primeng/inputicon';
         </ng-template>
         <ng-template pTemplate="body" let-sale>
           <tr>
-            <td style="font-weight:700; color:var(--primary-600);">#{{ sale.id }}</td>
-            <td>{{ sale.saleDate | date: 'MMM d, y HH:mm' }}</td>
+            <td style="font-weight:700; color:var(--p-primary-600);">#{{ sale.id }}</td>
+            <td>{{ sale.createdAt | date: 'MMM d, y HH:mm' }}</td>
             <td>{{ sale.customerName || 'Walk-in' }}</td>
-            <td>{{ sale.cashierName }}</td>
+            <td>{{ sale.createdBy }}</td>
             <td>{{ sale.items.length }} items</td>
-            <td style="font-weight:700;">{{ sale.total | currency: 'SAR' }}</td>
+            <td style="font-weight:700;">{{ sale.totalAmount | currency }}</td>
             <td>
               <p-tag
                 [value]="sale.paymentMethod | titlecase"
@@ -111,7 +118,7 @@ import { InputIconModule } from 'primeng/inputicon';
             </td>
             <td>
               <p-tag
-                [value]="sale.status | titlecase"
+                [value]="'completed' | titlecase"
                 [severity]="sale.status === 'completed' ? 'success' : 'danger'"
               />
             </td>
@@ -128,10 +135,7 @@ import { InputIconModule } from 'primeng/inputicon';
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td
-              colspan="9"
-              style="text-align:center;padding:2rem;color:var(--text-color-secondary);"
-            >
+            <td colspan="9" style="text-align:center;padding:2rem;">
               {{ 'COMMON.NO_DATA' | translate }}
             </td>
           </tr>
@@ -141,38 +145,18 @@ import { InputIconModule } from 'primeng/inputicon';
   `,
 })
 export class SalesListComponent implements OnInit {
-  sales: Sale[] = [];
+  sales = inject(SalesService);
   filtered: Sale[] = [];
   searchQuery = '';
   dateRange: Date[] | null = null;
 
-  constructor(private data: DataService) {}
-
-  ngOnInit() {
-    this.data.getSales().subscribe((s) => {
-      this.sales = s;
-      this.filtered = s;
-    });
+  constructor(public auth: AuthService) {
+    this.sales.load();
   }
 
-  filter() {
-    this.filtered = this.sales.filter((s) => {
-      const q = this.searchQuery.toLowerCase();
-      const matchText =
-        !q ||
-        (s.customerName || '').toLowerCase().includes(q) ||
-        (s.cashierName || '').toLowerCase().includes(q);
-      const matchDate =
-        !this.dateRange?.[0] ||
-        !this.dateRange?.[1] ||
-        (new Date(s.saleDate) >= this.dateRange[0] && new Date(s.saleDate) <= this.dateRange[1]);
-      return matchText && matchDate;
-    });
-  }
+  ngOnInit() {}
 
-  clearFilter() {
-    this.searchQuery = '';
-    this.dateRange = null;
-    this.filtered = this.sales;
-  }
+  protected clearFilter() {}
+
+  protected filter() {}
 }

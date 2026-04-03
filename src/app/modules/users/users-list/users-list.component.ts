@@ -8,7 +8,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { MessageService, ConfirmationService } from 'primeng/api';
-import { DataService } from '../../../core/services/data.service';
 import { User } from '../../../core/models/models';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
@@ -138,7 +137,6 @@ import { UserService } from '../services/user.service';
 export class UsersListComponent implements OnInit {
   users = inject(UserService);
   constructor(
-    private data: DataService,
     private confirm: ConfirmationService,
     private msg: MessageService,
   ) {

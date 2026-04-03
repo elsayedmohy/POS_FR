@@ -112,7 +112,7 @@ import { AuthService } from '../../core/services/auth.service';
         <div class="user-info">
           <p-avatar
             [label]="(user?.name || 'U').charAt(0).toUpperCase()"
-            [style]="{ 'background-color': 'var(--primary-500)', color: 'var(--primary-900)' }"
+            [style]="{ 'background-color': 'var(--p-primary-500)', color: 'var(--primary-900)' }"
             shape="circle"
           />
           <div class="d-none d-md-block">

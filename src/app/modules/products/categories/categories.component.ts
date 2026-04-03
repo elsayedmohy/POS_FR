@@ -8,7 +8,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MessageService, ConfirmationService } from 'primeng/api';
-import { DataService } from '../../../core/services/data.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Category } from '../models/category';
 import { CategoryService } from '../services/category.service';
@@ -174,7 +173,6 @@ export class CategoriesComponent implements OnInit {
   form: any;
 
   constructor(
-    private data: DataService,
     private fb: FormBuilder,
     private msg: ToastService,
     private confirm: ConfirmationService,

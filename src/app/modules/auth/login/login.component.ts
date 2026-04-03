@@ -48,7 +48,7 @@ import { AuthService } from '../../../core/services/auth.service';
               <p-checkbox formControlName="rememberMe" [binary]="true" inputId="remember" />
               <label for="remember" style="cursor:pointer; font-size:0.9rem;">{{ 'AUTH.REMEMBER_ME' | translate }}</label>
             </div>
-            <a [routerLink]="['/auth/forgot-password']" style="color: var(--primary-500); font-size: 0.85rem; text-decoration:none;">
+            <a [routerLink]="['/auth/forgot-password']" style="color: var(--p-primary-500); font-size: 0.85rem; text-decoration:none;">
               {{ 'AUTH.FORGOT_PASSWORD' | translate }}
             </a>
           </div>

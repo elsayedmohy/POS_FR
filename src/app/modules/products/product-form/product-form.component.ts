@@ -10,7 +10,6 @@ import { ButtonModule } from 'primeng/button';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { SelectModule } from 'primeng/select';
 import { MessageService } from 'primeng/api';
-import { DataService } from '../../../core/services/data.service';
 import { ProductService } from '../services/product.service';
 import { CategoryService } from '../services/category.service';
 import { Product, ProductRequest } from '../models/product';
@@ -184,17 +183,14 @@ export class ProductFormComponent implements OnInit {
   categories = inject(CategoryService);
   isEdit = false;
   loading = false;
-
   form: FormGroup;
 
   constructor(
     private fb: FormBuilder,
-    private data: DataService,
     private router: Router,
     private route: ActivatedRoute,
     private msg: MessageService,
   ) {
-    this.products.load();
     this.categories.load();
     this.form = this.fb.group({
       name: ['', Validators.required],
@@ -217,22 +213,33 @@ export class ProductFormComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEdit = true;
-      const product = this.products.filteredProducts().find((p) => p.id === +id);
-      const category = this.categories
-        .filteredCategories()
-        .find((c) => c.id === product.categoryId);
-      if (product) {
-        this.form.patchValue({
-          name: product.name,
-          barcode: product.barcode,
-          price: product.price,
-          stock: product.stock,
-          category: category.id,
-          active: product.active,
-          description: product.description,
-        });
+
+      if (this.products.loaded()) {
+        const product = this.products.filteredProducts().find((p) => p.id === +id);
+        this.setFormValues(product, product.categoryId);
+      } else {
+       this.products.getProductById(+id).subscribe((res) => this.setFormValues(res ,res.categoryId));
       }
+
     }
+  }
+
+  getProductCategory(product: Product) {
+    return  this.categories
+      .filteredCategories()
+      .find((c) => c.id === product.categoryId);
+  }
+
+  setFormValues(product: Product , categoryId) {
+    this.form.patchValue({
+      name: product.name,
+      barcode: product.barcode,
+      price: product.price,
+      stock: product.stock,
+      category: categoryId,
+      active: product.active,
+      description: product.description,
+    });
   }
 
   /** Returns true when a field is invalid AND has been touched */
@@ -249,19 +256,19 @@ export class ProductFormComponent implements OnInit {
 
     let formValue = this.form.value;
 
-    let productRequest:ProductRequest = {
-        id: this.isEdit ? +this.route.snapshot.paramMap.get('id')! : null,
-      name : formValue.name,
+    let productRequest: ProductRequest = {
+      id: this.isEdit ? +this.route.snapshot.paramMap.get('id')! : null,
+      name: formValue.name,
       price: formValue.price,
       stock: formValue.stock,
       categoryId: formValue.category,
       barcode: formValue.barcode,
       active: formValue.active,
       description: formValue.description,
-    }
+    };
 
     this.loading = true;
-    if(this.isEdit) {
+    if (this.isEdit) {
       this.products.update(productRequest).subscribe({
         next: () => {
           this.loading = false;
@@ -292,6 +299,5 @@ export class ProductFormComponent implements OnInit {
         },
       });
     }
-
   }
 }

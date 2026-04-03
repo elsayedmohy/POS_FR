@@ -12,7 +12,6 @@ export class ProductService {
 
   // --- state ---
   private _products = signal<Product[]>([]);
-  private _searchQuery = signal('');
   private _loading = signal(false);
   private _loaded = signal(false);
   private _error = signal<string | null>(null);
@@ -76,6 +75,21 @@ export class ProductService {
         }),
       )
       .subscribe();
+  }
+
+  getProductById(id: number) {
+   return  this.api
+      .get<Product>(this.productsURl + '/' + id)
+      .pipe(
+        tap({
+          next: (data) => {
+            return data
+          },
+          error: (err) => {
+            this._error.set(err.message ?? 'Failed to load products');
+          },
+        }),
+      )
   }
 
   refresh() {

@@ -43,7 +43,7 @@ interface NavItem {
         .brand-icon {
           width: 40px;
           height: 40px;
-          background: var(--primary-500);
+          background: var(--p-primary-500);
           border-radius: 10px;
           display: flex;
           align-items: center;
@@ -100,17 +100,33 @@ interface NavItem {
           overflow: hidden;
         }
         &:hover {
-          background: var(--primary-50);
-          color: var(--primary-600);
+          background: var(--p-primary-100);
+          color: var(--p-primary-600);
         }
         &.active {
-          background: var(--primary-50);
-          color: var(--primary-600);
+          background: var(--p-primary-100);
+          color: var(--p-primary-600);
           font-weight: 600;
-          box-shadow: inset 3px 0 0 var(--primary-500);
+          box-shadow: inset 3px 0 0 var(--p-primary-500);
         }
+        :host-context(html.app-dark) &.active {
+          background: var(--p-primary-800);
+          color: var(--p-primary-100);
+          box-shadow: inset 3px 0 0 var(--p-primary-400);
+        }
+
+        :host-context(html.app-dark) &:hover {
+          background: var(--p-primary-800);
+          color: var(--p-primary-100);
+          box-shadow: inset 3px 0 0 var(--p-primary-400);
+        }
+
         :host-context(body.rtl) &.active {
-          box-shadow: inset -3px 0 0 var(--primary-500);
+          box-shadow: inset 3px 0 0 var(--p-primary-400);
+        }
+
+        :host-context(body.rtl) &:hover {
+          box-shadow: inset 3px 0 0 var(--p-primary-400);
         }
       }
       .sidebar-footer {
@@ -124,7 +140,7 @@ interface NavItem {
         padding: 0.75rem;
         border-radius: 10px;
         cursor: pointer;
-        color: var(--red-500);
+        color: var(--p-red-400);
         font-weight: 500;
         font-size: 0.9rem;
         transition: all 0.2s;
@@ -195,7 +211,7 @@ interface NavItem {
         >
           <i class="pi pi-sign-out"></i>
           @if (!collapsed) {
-          <span >{{ 'NAV.LOGOUT' | translate }}</span>
+            <span>{{ 'NAV.LOGOUT' | translate }}</span>
           }
         </div>
       </div>

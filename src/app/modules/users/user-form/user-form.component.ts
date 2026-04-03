@@ -7,7 +7,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { MessageService } from 'primeng/api';
-import { DataService } from '../../../core/services/data.service';
 import { User } from '../../../core/models/models';
 import { SelectModule } from 'primeng/select';
 import { UserRole } from '../../../core/models/enums';
@@ -136,7 +135,6 @@ export class UserFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private data: DataService,
     private router: Router,
     private route: ActivatedRoute,
     private msg: ToastService,
